@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
 
+  
   // Function to fetch activities from API
   async function fetchActivities() {
     try {
@@ -39,6 +40,27 @@ document.addEventListener("DOMContentLoaded", () => {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
     }
+  }
+
+  // Function to render an activity card
+  function renderActivityCard(activity) {
+    return `
+      <div class="activity-card">
+        <h4>${activity.name}</h4>
+        <p>${activity.description}</p>
+        <div class="participants-section">
+          <strong>Participants:</strong>
+          <ul class="participants-list">
+            ${
+              activity.participants && activity.participants.length > 0
+                ? activity.participants.map(email => `<li>${email}</li>`).join('')
+                : '<li><em>No participants yet.</em></li>'
+            }
+          </ul>
+        </div>
+        <button onclick="selectActivity('${activity.id}')">Sign Up</button>
+      </div>
+    `;
   }
 
   // Handle form submission
