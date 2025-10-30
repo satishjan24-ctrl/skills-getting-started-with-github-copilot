@@ -53,8 +53,13 @@ document.addEventListener("DOMContentLoaded", () => {
           <ul class="participants-list">
             ${
               activity.participants && activity.participants.length > 0
-                ? activity.participants.map(email => `<li>${email}</li>`).join('')
-                : '<li><em>No participants yet.</em></li>'
+                ? activity.participants.map(email => `
+                  <li style="list-style-type:none;display:flex;align-items:center;">
+                    <span>${email}</span>
+                    <span class="delete-participant" title="Remove" style="margin-left:8px;cursor:pointer;color:#c62828;font-size:1.2em;" onclick="unregisterParticipant('${activity.id}','${email}')">&#10006;</span>
+                  </li>
+                `).join('')
+                : '<li style="list-style-type:none;"><em>No participants yet.</em></li>'
             }
           </ul>
         </div>
@@ -84,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        fetchActivities(); // Refresh activities list after signup
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
