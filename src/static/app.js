@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
 
+  
   // Function to fetch activities from API
   async function fetchActivities() {
     try {
@@ -41,6 +42,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Function to render an activity card
+  function renderActivityCard(activity) {
+    return `
+      <div class="activity-card">
+        <h4>${activity.name}</h4>
+        <p>${activity.description}</p>
+        <div class="participants-section">
+          <strong>Participants:</strong>
+          <ul class="participants-list">
+            ${
+              activity.participants && activity.participants.length > 0
+                ? activity.participants.map(email => `
+                  <li style="list-style-type:none;display:flex;align-items:center;">
+                    <span>${email}</span>
+                    <span class="delete-participant" title="Remove" style="margin-left:8px;cursor:pointer;color:#c62828;font-size:1.2em;" onclick="unregisterParticipant('${activity.id}','${email}')">&#10006;</span>
+                  </li>
+                `).join('')
+                : '<li style="list-style-type:none;"><em>No participants yet.</em></li>'
+            }
+          </ul>
+        </div>
+        <button onclick="selectActivity('${activity.id}')">Sign Up</button>
+      </div>
+    `;
+  }
+
   // Handle form submission
   signupForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -62,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        fetchActivities(); // Refresh activities list after signup
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
